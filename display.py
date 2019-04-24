@@ -1,6 +1,6 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import AmbientLight, PointLight
-from panda3d.core import LPoint3, LVector3
+from panda3d.core import LVector3
 
 from direct.task import Task
 
@@ -15,11 +15,15 @@ class Paralax(ShowBase):
     startX = 0.0
     startY = -50.0
     startZ = 30.0
+
     x = startX
     y = startY
     z = startZ
 
-    prevX = x
+    # Trial and error found these to be acceptable scale factors
+    scaleX = 1 / 20
+    scaleY = 1 / 2
+    scaleZ = 1 / 15
 
     haar = "haarcascade_frontalface_default.xml"
 
@@ -37,29 +41,26 @@ class Paralax(ShowBase):
         self.shaderenable = 1
         self.scene.setShaderAuto()
 
+        # Add ambient light
         alight = AmbientLight('alight')
-        alight.setColor((0.2, 0.2, 0.2, 1))
-        alnp = render.attachNewNode(alight)
+        alight.setColor((0.1, 0.11, 0.11, 1))
+        alnp = self.render.attachNewNode(alight)
         self.scene.setLight(alnp)
 
-        # Add a light to the scene.
+        # Add point light.
         plight = PointLight('plight')
         plight.setColor((1, 1, 1, 1))
-        plight.setAttenuation(LVector3(0.7, 0.05, 0))
-        plnp = render.attachNewNode(plight)
-        plnp.setPos(-27, 100, 3)
+        plight.setAttenuation(LVector3(0.1, 0.02, 0))
+        plnp = self.render.attachNewNode(plight)
+        plnp.setPos(-27, 100, 0)
         self.scene.setLight(plnp)
         # Create a sphere to denote the light
-        sphere = loader.loadModel("models/icosphere")
+        sphere = self.loader.loadModel("models/icosphere")
         sphere.reparentTo(plnp)
 
         self.taskMgr.add(self.display, 'Display')
 
         print("%.1f, %.1f, %.1f" % (self.x, self.y, self.z))
-
-
-    def rotateLight(self, offset):
-        self.lightpivot.setH(self.lightpivot.getH() + offset * 20)
 
     def findFace(self):
 
@@ -74,16 +75,17 @@ class Paralax(ShowBase):
             centerX = x + (w / 2)
             centerZ = y + (h / 2)
 
-            self.x = self.startX - centerX / 20
-            self.z = self.startZ - centerZ / 15
-            self.y = self.startY + w /2
+            self.x = self.startX - centerX * self.scaleX
+            self.z = self.startZ - centerZ * self.scaleZ
+            # we use the width of the face to estimate distance.
+            self.y = self.startY + w * self.scaleY
 
             print("%.1f, %.1f, %.1f" % (self.x, self.y, self.z))
 
     def display(self, task):
 
         self.camera.setPos(self.x, self.y, self.z)
-        rads = atan2(self.y , self.x)
+        rads = atan2(self.y, self.x)
         degs = 0
         degs = 180 * rads / pi
         degs += 100
