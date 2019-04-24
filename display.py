@@ -13,7 +13,7 @@ import cv2
 class Paralax(ShowBase):
 
     startX = 0.0
-    startY = -30.0
+    startY = -25.0
     startZ = 20.0
     x = startX
     y = startY
@@ -44,14 +44,17 @@ class Paralax(ShowBase):
 
         # Add a light to the scene.
         self.lightpivot = render.attachNewNode("lightpivot")
-        self.lightpivot.setPos(0, 0, 25)
-        self.lightpivot.hprInterval(10, LPoint3(360, 0, 0)).loop()
+        self.lightpivot.setPos(-72, 100, 3)
+        # self.lightpivot.hprInterval(10, LPoint3(360, 0, 0)).loop()
         plight = PointLight('plight')
         plight.setColor((1, 1, 1, 1))
         plight.setAttenuation(LVector3(0.7, 0.05, 0))
         plnp = self.lightpivot.attachNewNode(plight)
         plnp.setPos(45, 0, 0)
         self.scene.setLight(plnp)
+        # Create a sphere to denote the light
+        sphere = loader.loadModel("models/icosphere")
+        sphere.reparentTo(plnp)
 
         self.taskMgr.add(self.display, 'Display')
         (self.width, self.height) = (base.win.getXSize(), base.win.getYSize())
