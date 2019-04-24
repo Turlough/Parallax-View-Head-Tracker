@@ -13,7 +13,7 @@ import cv2
 class Paralax(ShowBase):
 
     startX = 0.0
-    startY = -25.0
+    startY = -50.0
     startZ = 30.0
     x = startX
     y = startY
@@ -76,10 +76,8 @@ class Paralax(ShowBase):
 
             self.x = self.startX - centerX / 20
             self.z = self.startZ - centerZ / 15
+            self.y = self.startY + w /2
 
-
-            # self.y = self.startY - center / 15
-            # self.y = 40 - w / 15
             print("%.1f, %.1f, %.1f" % (self.x, self.y, self.z))
 
     def display(self, task):
