@@ -14,7 +14,7 @@ class Paralax(ShowBase):
 
     startX = 0.0
     startY = -25.0
-    startZ = 20.0
+    startZ = 30.0
     x = startX
     y = startY
     z = startZ
@@ -43,22 +43,18 @@ class Paralax(ShowBase):
         self.scene.setLight(alnp)
 
         # Add a light to the scene.
-        self.lightpivot = render.attachNewNode("lightpivot")
-        self.lightpivot.setPos(-72, 100, 3)
-        # self.lightpivot.hprInterval(10, LPoint3(360, 0, 0)).loop()
         plight = PointLight('plight')
         plight.setColor((1, 1, 1, 1))
         plight.setAttenuation(LVector3(0.7, 0.05, 0))
-        plnp = self.lightpivot.attachNewNode(plight)
-        plnp.setPos(45, 0, 0)
+        plnp = render.attachNewNode(plight)
+        plnp.setPos(-27, 100, 3)
         self.scene.setLight(plnp)
         # Create a sphere to denote the light
         sphere = loader.loadModel("models/icosphere")
         sphere.reparentTo(plnp)
 
         self.taskMgr.add(self.display, 'Display')
-        (self.width, self.height) = (base.win.getXSize(), base.win.getYSize())
-        print("Window: %.1f, %.1f" % (self.width, self.height))
+
         print("%.1f, %.1f, %.1f" % (self.x, self.y, self.z))
 
 
@@ -74,15 +70,12 @@ class Paralax(ShowBase):
 
         if(len(faces) > 0):
 
-            (self.width, self.height) = (base.win.getXSize(), base.win.getYSize())
-            # print("Window: %.1f, %.1f" % (self.width, self.height))
-
             (x, y, w, h) = faces[0]
             centerX = x + (w / 2)
             centerZ = y + (h / 2)
 
             self.x = self.startX - centerX / 20
-            # self.z = self.startZ - centerZ / 50
+            self.z = self.startZ - centerZ / 15
 
 
             # self.y = self.startY - center / 15
